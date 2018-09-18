@@ -10,7 +10,7 @@
         defaults: {
             template: "<div class='facet-search-filter'><% " +
                 "_.forEach(facet.Values, function(value){" +
-                "%><p class='facet-value' data-facetValue='<%= value.Name !== '' ? escape(value.Name) : '_empty_' %>'>" +
+                "%><p class='facet-value' data-facetValue='<%= value.Name !== '' ? encodeURI(value.Name) : '_empty_' %>'>" +
                 "<span><%= value.Name !== '' ? value.Name : emptyText %> " +
                 "<span class='facet-count'>(<%= value.Count %>)</span>" +
                 "</span>" +
@@ -20,7 +20,7 @@
 
             templateMulti: "<div class='facet-search-filter'><% " +
                 "_.forEach(facet.Values, function(value){" +
-                "%><p class='facet-value' data-facetValue='<%= value.Name !== '' ? escape(value.Name) : '_empty_' %>'>" +
+                "%><p class='facet-value' data-facetValue='<%= value.Name !== '' ? encodeURI(value.Name) : '_empty_' %>'>" +
                 "<input type='checkbox' name='facetValue' />" +
                 "<label for='facetName'><%= value.Name !== '' ? value.Name : emptyText %> " +
                 "<span class='facet-count' data-facetCount='<%= value.Count %>'>(<%= value.Count %>)</span>" +
