@@ -10,7 +10,7 @@
         defaults: {
             template: "<div class='facet-search-filter'><% " +
                 "_.forEach(facet.Values, function(value){" +
-                "%><p class='facet-value' data-facetValue='<%= value.Name !== '' ? encodeURI(value.Name) : '_empty_' %>'>" +
+                "%><p class='facet-value' data-facetValue='<%= value.Name !== '' ? encodeURIComponent(value.Name) : '_empty_' %>'>" +
                 "<span><%= value.Name !== '' ? value.Name : emptyText %> " +
                 "<span class='facet-count'>(<%= value.Count %>)</span>" +
                 "</span>" +
@@ -20,7 +20,7 @@
 
             templateMulti: "<div class='facet-search-filter'><% " +
                 "_.forEach(facet.Values, function(value){" +
-                "%><p class='facet-value' data-facetValue='<%= value.Name !== '' ? encodeURI(value.Name) : '_empty_' %>'>" +
+                "%><p class='facet-value' data-facetValue='<%= value.Name !== '' ? encodeURIComponent(value.Name) : '_empty_' %>'>" +
                 "<input type='checkbox' name='facetValue' />" +
                 "<label for='facetName'><%= value.Name !== '' ? value.Name : emptyText %> " +
                 "<span class='facet-count' data-facetCount='<%= value.Count %>'>(<%= value.Count %>)</span>" +
@@ -78,6 +78,9 @@
             if (valuesString) {
                 var values = valuesString.split(','),
                     array = this.get('facetArray');
+                for (var i = 0; i < values.length; i++) {
+					 values[i] = encodeURIComponent(values[i]);
+                }
                 for (var i = 0; i < values.length; i++) {
                     array.push(values[i]);
                 }
@@ -246,7 +249,11 @@
                     if (!jQuery.isEmptyObject(_.pick(hash, sig))) {
                         var values = _.values(_.pick(hash, sig))[0];
                         if (values) {
-                            inst.setActiveFacet(facetName, values);
+                            var escapedValues = values.split(',');
+                            for (var i = 0; i < escapedValues.length; i++) {
+                                escapedValues[i] = encodeURIComponent(escapedValues[i]);
+                            }
+                            inst.setActiveFacet(facetName, escapedValues);
 
                             //if this rendering is supporting multiple signatures that it's enough it we will mark active facet once
                             return;
@@ -275,9 +282,9 @@
                 facetValue,
                 values;
 
-            facetValueName = facetValueName.toString().toLowerCase();
+            facetValueName = facetValueName.toString();
             facetValue = this.$el.find("[data-facetvalue]").filter(function () {
-                return $(this).attr("data-facetvalue").toLowerCase() === facetValueName;
+                return $(this).attr("data-facetvalue").toLowerCase() === facetValueName.toLowerCase();
             });
 
 
