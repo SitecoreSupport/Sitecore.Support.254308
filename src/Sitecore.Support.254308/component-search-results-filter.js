@@ -10,7 +10,7 @@
         defaults: {
             template: "<div class='facet-search-filter'><% " +
                 "_.forEach(facet.Values, function(value){" +
-                "%><p class='facet-value' data-facetValue='<%= value.Name !== '' ? encodeURIComponent(value.Name) : '_empty_' %>'>" +
+                "%><p class='facet-value' data-facetValue=\'<%= value.Name !== '' ? encodeURIComponent(value.Name.replace(\"\'\",'.qqm.')) : '_empty_' %>\'>" +
                 "<span><%= value.Name !== '' ? value.Name : emptyText %> " +
                 "<span class='facet-count'>(<%= value.Count %>)</span>" +
                 "</span>" +
@@ -20,7 +20,7 @@
 
             templateMulti: "<div class='facet-search-filter'><% " +
                 "_.forEach(facet.Values, function(value){" +
-                "%><p class='facet-value' data-facetValue='<%= value.Name !== '' ? encodeURIComponent(value.Name) : '_empty_' %>'>" +
+                "%><p class='facet-value' data-facetValue=\'<%= value.Name !== '' ? encodeURIComponent(value.Name.replace(\"\'\",'.qqm.')) : '_empty_' %>\'>" +
                 "<input type='checkbox' name='facetValue' />" +
                 "<label for='facetName'><%= value.Name !== '' ? value.Name : emptyText %> " +
                 "<span class='facet-count' data-facetCount='<%= value.Count %>'>(<%= value.Count %>)</span>" +
@@ -232,6 +232,7 @@
             }
 
             if (resultData !== undefined) {
+				console.log(resultData);
                 if (inst.model.get('dataProperties').multi === true) {
                     template = _.template(inst.model.get("templateMulti"));
                 } else {
@@ -241,6 +242,13 @@
             }
 
             inst.$el.find(".contentContainer").html(templateResult);
+			//fix 254308
+			_.each(this.$el.find('p[data-facetvalue]'), function(facet){
+				var value = decodeURIComponent(facet.getAttribute('data-facetValue'));
+				value = value.replace('.qqm.',"'");
+				facet.setAttribute('data-facetValue',value);
+			});
+			
 
             //check url hash for facet's and run setActiveFacet method for each facet filter
             _.each(facetNames, function (val) {
@@ -284,6 +292,7 @@
 
             facetValueName = facetValueName.toString();
             facetValue = this.$el.find("[data-facetvalue]").filter(function () {
+				//fix
                 return $(this).attr("data-facetvalue").toLowerCase() === facetValueName.toLowerCase();
             });
 
