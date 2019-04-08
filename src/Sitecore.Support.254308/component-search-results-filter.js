@@ -232,7 +232,6 @@
             }
 
             if (resultData !== undefined) {
-				console.log(resultData);
                 if (inst.model.get('dataProperties').multi === true) {
                     template = _.template(inst.model.get("templateMulti"));
                 } else {
@@ -293,7 +292,7 @@
             facetValueName = facetValueName.toString();
             facetValue = this.$el.find("[data-facetvalue]").filter(function () {
 				//fix
-                return $(this).attr("data-facetvalue").toLowerCase() === facetValueName.toLowerCase();
+                return $(this).attr("data-facetvalue").toLowerCase() === decodeURIComponent(facetValueName.toLowerCase());
             });
 
 
